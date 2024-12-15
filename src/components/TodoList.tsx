@@ -1,38 +1,27 @@
-
 'use client';
 
-import { useEffect, useState } from 'react';
-import TodoTask, { Task } from './TodoTask';
 import { useTodos } from '@/hooks/useTodos';
+import TodoTask from './TodoTask';
 
 export default function TodoList() {
-    const { addTodo, getTodos, updateTodo, deleteTodo } = useTodos()
-    const [todos, setTodos] = useState<Task[]>([])
-    const [newTask, setNewTask] = useState('')
+    const { todos, task, setTask, addTodo, updateTodo, deleteTodo } = useTodos();
 
-    useEffect(() => {
-        const loadTodos = async () => {
-            const data = await getTodos();
-            setTodos(data)
-        };
-
-        loadTodos()
-    }, [])
-    
-    const addNewTodo = async () => {
-        const newTodo = await addTodo(newTask);
-        setTodos((prevTodos) => [...prevTodos, newTodo])
-        setNewTask('') // Clears the input
+    const handleAddTodo = async () => {
+        await addTodo(task); 
     }
 
-    const updateTodoTask = async (taskId: number, updatedTaskName: string) => {
-        const updatedTask = await updateTodo(taskId, updatedTaskName)
-        setTodos((prevTodos) => prevTodos.map((task) => (task.id === taskId ? updatedTask : task)))
-    }
+    const handleUpdateTodo = (taskId: number) => {
+        const updatedName = prompt(
+            'Update Task',
+            todos.find((todo) => todo.id === taskId)?.task
+        );
+        if (updatedName) {
+            updateTodo(taskId, updatedName)
+        }
+    };
 
-    const removeTodoTask = async (taskId: number) => {
-        await deleteTodo(taskId);
-        setTodos((prevTodos) => prevTodos.filter((task) => task.id !== taskId))
+    const handleDeleteTodo = (taskId: number) => {
+        deleteTodo(taskId)
     }
 
     return (
@@ -43,13 +32,13 @@ export default function TodoList() {
             <div className="mb-4">
                 <input
                     type="text"
-                    value={newTask}
-                    onChange={(e) => setNewTask(e.target.value)}
+                    value={task}
+                    onChange={(e) => setTask(e.target.value)}
                     placeholder="Enter a new task"
                     className="border p-2 rounded w-full text-black"
                 />
                 <button
-                    onClick={addNewTodo}
+                    onClick={handleAddTodo}
                     className="mt-2 bg-blue-500 text-white px-4 py-2 rounded w-full"
                 >
                     Add Task
@@ -58,40 +47,24 @@ export default function TodoList() {
 
             {/* Render the list of todos */}
             <ul>
-                {todos.map((task) => (
-                    <li key={task.id} className="flex items-center mb-4 space-x-4">
-                        {/* Editable input field on clicking the Update button */}
-                        <div className="flex items-center">
-                            <TodoTask task={task} />
-
-                            {/* Show input to edit the task */}
-                            <button
-                                onClick={() => {
-                                    const updatedName = prompt(
-                                        'Update Task',
-                                        task.task
-                                    ); // Prompt for input
-                                    if (updatedName) {
-                                        updateTodoTask(task.id, updatedName);
-                                    }
-                                }}
-                                className="bg-blue-500 text-white px-4 py-2 rounded"
-                            >
-                                Update
-                            </button>
-
-                            {/* Delete Button */}
-                            <button
-                                onClick={() => removeTodoTask(task.id)}
-                                className="bg-red-500 text-white px-4 py-2 rounded"
-                            >
-                                Delete
-                            </button>
-                        </div>
+                {todos.map((todo) => (
+                    <li key={todo.id} className="flex items-center mb-4 space-x-4">
+                        <TodoTask task={todo} />
+                        <button
+                            onClick={() => handleUpdateTodo(todo.id)}
+                            className="bg-blue-500 text-white px-4 py-2 rounded"
+                        >
+                            Update
+                        </button>
+                        <button
+                            onClick={() => handleDeleteTodo(todo.id)}
+                            className="bg-red-500 text-white px-4 py-2 rounded"
+                        >
+                            Delete
+                        </button>
                     </li>
                 ))}
             </ul>
         </div>
     );
-      
 }

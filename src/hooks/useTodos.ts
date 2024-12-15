@@ -1,8 +1,13 @@
 
+
 import { supabase } from "@/lib/supabase";
+import { useEffect, useState } from "react";
+import { Task } from '@/components/TodoTask'
 
 export const useTodos = () => {
-
+    const [todos, setTodos] = useState<Task[]>([])
+    const [task, setTask] = useState('')
+    
     const addTodo = async(taskName: string) => {
         const { data, error } = await supabase
             .from('tasks')
@@ -11,18 +16,21 @@ export const useTodos = () => {
             .single()
 
         if (error) { throw new Error(`Failed to add task: ${error.message}`) }
+        setTodos((prev) => [...prev, data])
+        setTask('')
 
-        return data;
     }
 
-    const getTodos = async () => {
-        const { data, error } = await supabase.from('tasks').select('*')
-        
-        if (error) { throw new Error(`Failed to get tasks: ${error.message}`) }
-        
-        return data;
-        
-    }
+    useEffect(() => {
+        const getTodos = async () => {
+            const { data, error } = await supabase.from("tasks").select("*");
+            if (error) { throw new Error(`Failed to get tasks: ${error.message}`) }
+            
+            setTodos(data)
+        }
+
+        getTodos()
+    }, [])
 
     const updateTodo = async (taskId: number, updatedTaskName: string) => {
         const { data, error } = await supabase
@@ -33,22 +41,19 @@ export const useTodos = () => {
             .single()
 
         if (error) { throw new Error(`Failed to update task: ${error.message}`) }
+        setTodos((prev) => prev.map((task) => (task.id === taskId ? data : task)))
 
-        return data; 
     }
 
     const deleteTodo = async (taskId: number) => {
-        const { data, error } =  await supabase
+        const { error } =  await supabase
             .from('tasks')
             .delete()
             .eq('id',taskId)
-            .select()
-            .single()
 
         if (error ) { throw new Error(`Failed to delete task: ${error.message}`) } 
-
-        return data;
+        setTodos((prev) => prev.filter((task) => task.id !== taskId))
     }
     
-    return { addTodo, getTodos, updateTodo, deleteTodo }
+    return { todos, task, setTask, addTodo, updateTodo, deleteTodo };
 }
