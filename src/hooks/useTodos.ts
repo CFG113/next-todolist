@@ -22,7 +22,7 @@ export const useTodos = () => {
 
     useEffect(() => {
         const getTodos = async () => {
-            const { data, error } = await supabase.from("tasks").select("*");
+            const { data, error } = await supabase.from('tasks').select('*')
             if (error) { throw new Error(`Failed to get tasks: ${error.message}`) }
             
             setTodos(data)
