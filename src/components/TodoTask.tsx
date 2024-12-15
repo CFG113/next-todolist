@@ -12,8 +12,8 @@ export default function TodoTask({
   onDelete,
 }: {
   task: Task;
-  onUpdate: (taskId: number, updatedTaskName: string) => Promise<void>;
-  onDelete: (taskId: number) => Promise<void>;
+  onUpdate: (taskId: number, updatedTaskName: string) => Promise<void>
+  onDelete: (taskId: number) => Promise<void>
 }) {
 
   const handleUpdate = async () => {
