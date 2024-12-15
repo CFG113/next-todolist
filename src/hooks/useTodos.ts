@@ -1,8 +1,12 @@
 
 import { supabase } from "@/lib/supabase";
+import { useEffect, useState } from "react";
+import { Task } from '@/components/TodoTask'
 
 export const useTodos = () => {
-
+    const [todos, setTodos] = useState<Task[]>([])
+    const [newTask, setNewTask] = useState<string>('');
+    
     const addTodo = async(taskName: string) => {
         const { data, error } = await supabase
             .from('tasks')
@@ -11,18 +15,20 @@ export const useTodos = () => {
             .single()
 
         if (error) { throw new Error(`Failed to add task: ${error.message}`) }
+        setTodos((prev) => [...prev, data])
+        setNewTask('')
 
-        return data;
     }
 
     const getTodos = async () => {
-        const { data, error } = await supabase.from('tasks').select('*')
-        
+        const { data, error } = await supabase.from("tasks").select("*")
         if (error) { throw new Error(`Failed to get tasks: ${error.message}`) }
-        
-        return data;
-        
+        setTodos(data || [])
     }
+
+    useEffect(() => {
+        getTodos()
+    }, []);
 
     const updateTodo = async (taskId: number, updatedTaskName: string) => {
         const { data, error } = await supabase
@@ -33,22 +39,19 @@ export const useTodos = () => {
             .single()
 
         if (error) { throw new Error(`Failed to update task: ${error.message}`) }
+        setTodos((prev) => prev.map((task) => (task.id === taskId ? data : task)))
 
-        return data; 
     }
 
     const deleteTodo = async (taskId: number) => {
-        const { data, error } =  await supabase
+        const { error } =  await supabase
             .from('tasks')
             .delete()
             .eq('id',taskId)
-            .select()
-            .single()
 
         if (error ) { throw new Error(`Failed to delete task: ${error.message}`) } 
-
-        return data;
+        setTodos((prev) => prev.filter((task) => task.id !== taskId))
     }
     
-    return { addTodo, getTodos, updateTodo, deleteTodo }
+    return { todos, newTask, setNewTask, addTodo, updateTodo, deleteTodo }
 }

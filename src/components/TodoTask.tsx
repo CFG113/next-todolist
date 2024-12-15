@@ -13,8 +13,6 @@ export type Task = {
   }) {
     return (
       <div>
-        <h3>{task.task}</h3>
-        <p>Completed: {task.is_complete ? 'Yes' : 'No'}</p>
       </div>
     )
   }
