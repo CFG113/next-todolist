@@ -5,7 +5,7 @@ import { Task } from '@/components/TodoTask'
 
 export const useTodos = () => {
     const [todos, setTodos] = useState<Task[]>([])
-    const [newTask, setNewTask] = useState<string>('');
+    const [task, setTask] = useState('')
     
     const addTodo = async(taskName: string) => {
         const { data, error } = await supabase
@@ -16,19 +16,20 @@ export const useTodos = () => {
 
         if (error) { throw new Error(`Failed to add task: ${error.message}`) }
         setTodos((prev) => [...prev, data])
-        setNewTask('')
+        setTask('')
 
-    }
-
-    const getTodos = async () => {
-        const { data, error } = await supabase.from("tasks").select("*")
-        if (error) { throw new Error(`Failed to get tasks: ${error.message}`) }
-        setTodos(data || [])
     }
 
     useEffect(() => {
+        const getTodos = async () => {
+            const { data, error } = await supabase.from("tasks").select("*");
+            if (error) { throw new Error(`Failed to get tasks: ${error.message}`) }
+            
+            setTodos(data)
+        }
+
         getTodos()
-    }, []);
+    }, [])
 
     const updateTodo = async (taskId: number, updatedTaskName: string) => {
         const { data, error } = await supabase
@@ -53,5 +54,5 @@ export const useTodos = () => {
         setTodos((prev) => prev.filter((task) => task.id !== taskId))
     }
     
-    return { todos, newTask, setNewTask, addTodo, updateTodo, deleteTodo }
+    return { todos, task, setTask, addTodo, updateTodo, deleteTodo };
 }

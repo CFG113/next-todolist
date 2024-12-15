@@ -1,11 +1,38 @@
 'use client';
 
-import TodoTask from './TodoTask';
+import { useEffect, useState } from 'react';
+import TodoTask, { Task } from './TodoTask';
 import { useTodos } from '@/hooks/useTodos';
 
 export default function TodoList() {
-    const { todos, newTask, setNewTask, addTodo, updateTodo, deleteTodo } = useTodos();
+    const { addTodo, getTodos, updateTodo, deleteTodo } = useTodos()
+    const [todos, setTodos] = useState<Task[]>([])
+    const [newTask, setNewTask] = useState('')
+
+    useEffect(() => {
+        const loadTodos = async () => {
+            const data = await getTodos();
+            setTodos(data)
+        };
+
+        loadTodos()
+    }, [])
     
+    const addNewTodo = async () => {
+        const newTodo = await addTodo(newTask);
+        setTodos((prevTodos) => [...prevTodos, newTodo])
+        setNewTask('') // Clears the input
+    }
+
+    const updateTodoTask = async (taskId: number, updatedTaskName: string) => {
+        const updatedTask = await updateTodo(taskId, updatedTaskName)
+        setTodos((prevTodos) => prevTodos.map((task) => (task.id === taskId ? updatedTask : task)))
+    }
+
+    const removeTodoTask = async (taskId: number) => {
+        await deleteTodo(taskId);
+        setTodos((prevTodos) => prevTodos.filter((task) => task.id !== taskId))
+    }
 
     return (
         <div>
