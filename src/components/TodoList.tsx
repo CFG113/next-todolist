@@ -7,21 +7,7 @@ export default function TodoList() {
     const { todos, task, setTask, addTodo, updateTodo, deleteTodo } = useTodos();
 
     const handleAddTodo = async () => {
-        await addTodo(task); 
-    }
-
-    const handleUpdateTodo = (taskId: number) => {
-        const updatedName = prompt(
-            'Update Task',
-            todos.find((todo) => todo.id === taskId)?.task
-        );
-        if (updatedName) {
-            updateTodo(taskId, updatedName)
-        }
-    };
-
-    const handleDeleteTodo = (taskId: number) => {
-        deleteTodo(taskId)
+        await addTodo(task)
     }
 
     return (
@@ -48,20 +34,12 @@ export default function TodoList() {
             {/* Render the list of todos */}
             <ul>
                 {todos.map((todo) => (
-                    <li key={todo.id} className="flex items-center mb-4 space-x-4">
-                        <TodoTask task={todo} />
-                        <button
-                            onClick={() => handleUpdateTodo(todo.id)}
-                            className="bg-blue-500 text-white px-4 py-2 rounded"
-                        >
-                            Update
-                        </button>
-                        <button
-                            onClick={() => handleDeleteTodo(todo.id)}
-                            className="bg-red-500 text-white px-4 py-2 rounded"
-                        >
-                            Delete
-                        </button>
+                    <li key={todo.id}>
+                        <TodoTask
+                            task={todo}
+                            onUpdate={updateTodo} 
+                            onDelete={deleteTodo}
+                        />
                     </li>
                 ))}
             </ul>
