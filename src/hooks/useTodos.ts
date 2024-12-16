@@ -15,6 +15,7 @@ export const useTodos = () => {
     useEffect(() => {
         const getTodos = async () => {
             setLoading(true)
+            setError('')
             try {
                 const { data } = await supabase.from('tasks').select('*').throwOnError()
                 setTodos(data || [])
@@ -30,6 +31,7 @@ export const useTodos = () => {
 
     const addTodo = async(taskName: string) => {
         setLoading(true)
+        setError('')
         try {
             const { data } = await supabase
                 .from('tasks')
@@ -49,6 +51,7 @@ export const useTodos = () => {
 
     const updateTodo = async (taskId: number, updatedTaskName: string) => {
         setLoading(true)
+        setError('')
         try {
             const { data } = await supabase
                 .from('tasks')
@@ -68,6 +71,7 @@ export const useTodos = () => {
 
     const deleteTodo = async (taskId: number) => {
         setLoading(true)
+        setError('')
         try {
             await supabase
                 .from('tasks')
@@ -83,5 +87,5 @@ export const useTodos = () => {
         }
     }
     
-    return { todos, task, setTask, loading, addTodo, updateTodo, deleteTodo };
+    return { todos, task, setTask, loading, error, addTodo, updateTodo, deleteTodo };
 }

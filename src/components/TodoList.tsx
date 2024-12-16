@@ -4,11 +4,18 @@ import { useTodos } from '@/hooks/useTodos';
 import TodoTask from './TodoTask';
 
 export default function TodoList() {
-    const { todos, task, setTask, addTodo, updateTodo, deleteTodo } = useTodos();
+    const { todos, task, error, setTask, addTodo, updateTodo, deleteTodo } = useTodos();
 
     return (
         <div>
             <h1 className="text-2xl font-bold mb-4">Todo List</h1>
+            
+            {/* Display Error */}
+            {error && (
+                <div className="bg-red-500 text-white p-2 rounded mb-4">
+                    {error}
+                </div>
+            )}
 
             {/* Input for adding new tasks */}
             <div className="mb-4">
