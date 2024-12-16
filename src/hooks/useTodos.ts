@@ -9,6 +9,7 @@ export const useTodos = () => {
     const [todos, setTodos] = useState<Task[]>([])
     const [task, setTask] = useState('')
     const [loading, setLoading] = useState(false)
+    const [error, setError] = useState('');
 
 
     useEffect(() => {
@@ -17,8 +18,8 @@ export const useTodos = () => {
             try {
                 const { data } = await supabase.from('tasks').select('*').throwOnError()
                 setTodos(data || [])
-            } catch(error) {
-                console.error('Failed to get tasks:', (error as PostgrestError).message)
+            } catch (error) {
+                setError(`Failed to get tasks: ${(error as PostgrestError).message}`)
             } finally {
                 setLoading(false)
             }
@@ -40,7 +41,7 @@ export const useTodos = () => {
             setTodos((prev) => [...prev, data])
             setTask('')
         } catch (error) {
-            console.error('Failed to add tasks:', (error as PostgrestError).message)
+            setError(`Failed to add task: ${(error as PostgrestError).message}`)
         } finally {
             setLoading(false)
         }
@@ -58,8 +59,8 @@ export const useTodos = () => {
                 .throwOnError()
 
             setTodos((prev) => prev.map((task) => (task.id === taskId ? data : task)))
-        } catch(error) {
-            console.error('Failed to update tasks:', (error as PostgrestError).message)
+        } catch (error) {
+            setError(`Failed to update task: ${(error as PostgrestError).message}`)
         } finally {
             setLoading(false)
         }
@@ -76,7 +77,7 @@ export const useTodos = () => {
             
             setTodos((prev) => prev.filter((task) => task.id !== taskId))
         } catch (error) {
-            console.error('Failed to delete tasks:', (error as PostgrestError).message)
+            setError(`Failed to delete task: ${(error as PostgrestError).message}`)
         } finally {
             setLoading(false)
         }
