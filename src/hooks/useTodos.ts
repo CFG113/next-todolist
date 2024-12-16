@@ -7,53 +7,59 @@ import { Task } from '@/components/TodoTask'
 export const useTodos = () => {
     const [todos, setTodos] = useState<Task[]>([])
     const [task, setTask] = useState('')
-    
-    const addTodo = async(taskName: string) => {
-        const { data, error } = await supabase
-            .from('tasks')
-            .insert([{ task: taskName }])
-            .select()
-            .single()
-
-        if (error) { throw new Error(`Failed to add task: ${error.message}`) }
-        setTodos((prev) => [...prev, data])
-        setTask('')
-
-    }
+    const [loading, setLoading] = useState(false)
 
     useEffect(() => {
         const getTodos = async () => {
-            const { data, error } = await supabase.from("tasks").select("*");
-            if (error) { throw new Error(`Failed to get tasks: ${error.message}`) }
+            setLoading(true)
+            const { data } = await supabase.from('tasks').select('*').throwOnError()
             
-            setTodos(data)
+            setTodos(data || [])
+            setLoading(false)
         }
 
         getTodos()
     }, [])
+    const addTodo = async(taskName: string) => {
+        setLoading(true)
+        const { data } = await supabase
+            .from('tasks')
+            .insert([{ task: taskName }])
+            .select()
+            .single()
+            .throwOnError()
+
+        
+        setTodos((prev) => [...prev, data])
+        setTask('')
+        setLoading(false)
+    }
 
     const updateTodo = async (taskId: number, updatedTaskName: string) => {
-        const { data, error } = await supabase
+        setLoading(true)
+        const { data } = await supabase
             .from('tasks')
             .update({ task: updatedTaskName })
             .eq('id', taskId)
             .select()
             .single()
+            .throwOnError()
 
-        if (error) { throw new Error(`Failed to update task: ${error.message}`) }
         setTodos((prev) => prev.map((task) => (task.id === taskId ? data : task)))
-
+        setLoading(false)
     }
 
     const deleteTodo = async (taskId: number) => {
-        const { error } =  await supabase
+        setLoading(true)
+        await supabase
             .from('tasks')
             .delete()
             .eq('id',taskId)
-
-        if (error ) { throw new Error(`Failed to delete task: ${error.message}`) } 
+            .throwOnError()
+            
         setTodos((prev) => prev.filter((task) => task.id !== taskId))
+        setLoading(false)
     }
     
-    return { todos, task, setTask, addTodo, updateTodo, deleteTodo };
+    return { todos, task, setTask, loading,  addTodo, updateTodo, deleteTodo };
 }

@@ -22,10 +22,6 @@ export default function TodoTask({
       await onUpdate(task.id, updatedName)
     }
   }
-  
-  const handleDelete = async () => {  
-    await onDelete(task.id)
-  }
 
   return (
     <div className="flex items-center justify-between mb-4">
@@ -41,7 +37,7 @@ export default function TodoTask({
                 Update
             </button>
             <button
-                onClick={handleDelete}
+                onClick={() => onDelete(task.id)}
                 className="bg-red-500 text-white px-4 py-2 rounded"
             >
                 Delete

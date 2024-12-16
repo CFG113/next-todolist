@@ -6,10 +6,6 @@ import TodoTask from './TodoTask';
 export default function TodoList() {
     const { todos, task, setTask, addTodo, updateTodo, deleteTodo } = useTodos();
 
-    const handleAddTodo = async () => {
-        await addTodo(task)
-    }
-
     return (
         <div>
             <h1 className="text-2xl font-bold mb-4">Todo List</h1>
@@ -24,7 +20,7 @@ export default function TodoList() {
                     className="border p-2 rounded w-full text-black"
                 />
                 <button
-                    onClick={handleAddTodo}
+                    onClick={() => addTodo(task)}
                     className="mt-2 bg-blue-500 text-white px-4 py-2 rounded w-full"
                 >
                     Add Task
