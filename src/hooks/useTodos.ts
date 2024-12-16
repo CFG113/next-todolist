@@ -61,5 +61,5 @@ export const useTodos = () => {
         setLoading(false)
     }
     
-    return { todos, task, setTask, loading,  addTodo, updateTodo, deleteTodo };
+    return { todos, task, setTask, loading, addTodo, updateTodo, deleteTodo };
 }
