@@ -24,21 +24,21 @@ export default function TodoTask({
   }
 
   return (
-    <div className="flex items-center justify-between mb-4">
+    <div className="">
         <div>
             <h3>{task.task}</h3>
             <p>Completed: {task.is_complete ? 'Yes' : 'No'}</p>
         </div>
-        <div className="flex space-x-2">
+        <div className="">
             <button
                 onClick={handleUpdate}
-                className="bg-blue-500 text-white px-4 py-2 rounded"
+                className=""
             >
                 Update
             </button>
             <button
                 onClick={() => onDelete(task.id)}
-                className="bg-red-500 text-white px-4 py-2 rounded"
+                className=""
             >
                 Delete
             </button>

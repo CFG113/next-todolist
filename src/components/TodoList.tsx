@@ -8,7 +8,7 @@ export default function TodoList() {
 
     return (
         <div>
-            <h1 className="text-2xl font-bold mb-4">Todo List</h1>
+            <h1 className="">Todo List</h1>
             
             {/* Display Error */}
             {error && (
@@ -18,17 +18,17 @@ export default function TodoList() {
             )}
 
             {/* Input for adding new tasks */}
-            <div className="mb-4">
+            <div className="">
                 <input
                     type="text"
                     value={task}
                     onChange={(e) => setTask(e.target.value)}
                     placeholder="Enter a new task"
-                    className="border p-2 rounded w-full text-black"
+                    className=""
                 />
                 <button
                     onClick={() => addTodo(task)}
-                    className="mt-2 bg-blue-500 text-white px-4 py-2 rounded w-full"
+                    className=""
                 >
                     Add Task
                 </button>
