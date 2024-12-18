@@ -4,7 +4,7 @@ import TodoList from "@/components/TodoList";
 
 export default function Home() {
   return (
-    <main>
+    <main className='bg-black'>
       <TodoList />
     </main>
   );

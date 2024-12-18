@@ -8,7 +8,7 @@ export default function TodoList() {
 
     return (
         <div>
-            <h1 className="">Todo List</h1>
+            <h1 className='flex items-center justify-center text-6xl'>Todo List</h1>
             
             {/* Display Error */}
             {error && (
@@ -18,17 +18,17 @@ export default function TodoList() {
             )}
 
             {/* Input for adding new tasks */}
-            <div className="">
+            <div className='flex items-center justify-center mt-40'>
                 <input
                     type="text"
                     value={task}
                     onChange={(e) => setTask(e.target.value)}
                     placeholder="Enter a new task"
-                    className=""
+                    className='rounded-lg text-black w-1/2 p-3'
                 />
                 <button
                     onClick={() => addTodo(task)}
-                    className=""
+                    className='bg-blue-500 text-white rounded-lg p-3 ml-10'
                 >
                     Add Task
                 </button>
